@@ -5,7 +5,6 @@ import "./App.css";
 
 export default function App() {
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
     <div className="app">
@@ -15,21 +14,24 @@ export default function App() {
           <span>성결대 유학생 단기선교 피드백</span>
         </Link>
         <nav className="app-nav">
-          {!isDashboard && (
-            <Link
-              to="/"
-              className={
-                location.pathname === "/" ? "nav-link active" : "nav-link"
-              }
-            >
-              피드백 작성
-            </Link>
-          )}
-          {isDashboard && (
-            <Link to="/" className="nav-link">
-              피드백 작성으로
-            </Link>
-          )}
+          <Link
+            to="/"
+            className={
+              location.pathname === "/" ? "nav-link active" : "nav-link"
+            }
+          >
+            피드백 작성
+          </Link>
+          <Link
+            to="/dashboard"
+            className={
+              location.pathname.startsWith("/dashboard")
+                ? "nav-link active"
+                : "nav-link"
+            }
+          >
+            결과 대시보드
+          </Link>
         </nav>
       </header>
 
