@@ -6,14 +6,68 @@ import {
   PROS_CONS_SECTIONS,
 } from "../data/questions.js";
 
-export default function DashboardPage() {
-  const [responses, setResponses] = useState([]);
-  const [loading, setLoading] = useState(true);
+const DASHBOARD_ACCESS_KEY = import.meta.env.VITE_DASHBOARD_KEY ?? "";
+const AUTH_SESSION_KEY = "mission_feedback_dashboard_auth";
+
+function DashboardGate({ onUnlock }) {
+  const [key, setKey] = useState("");
   const [error, setError] = useState("");
-  const [selected, setSelected] = useState(null); // 상세보기 대상 응답
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (key === DASHBOARD_ACCESS_KEY) {
+      sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+      onUnlock();
+      return;
+    }
+    setError("접근 키가 올바르지 않습니다.");
+  }
+
+  return (
+    <div className="card auth-card">
+      <h1>결과 대시보드</h1>
+      <p className="auth-desc">관리자만 접근할 수 있습니다. 접근 키를 입력해 주세요.</p>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <label className="field-label" htmlFor="dashboard_key">
+          접근 키
+        </label>
+        <input
+          id="dashboard_key"
+          className="text-input"
+          type="password"
+          placeholder="접근 키를 입력하세요"
+          value={key}
+          onChange={(e) => {
+            setKey(e.target.value);
+            setError("");
+          }}
+          autoComplete="off"
+        />
+        {error && <p className="auth-error">{error}</p>}
+        <button type="submit" className="btn btn-primary btn-large">
+          확인
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  const [authenticated, setAuthenticated] = useState(
+    () => sessionStorage.getItem(AUTH_SESSION_KEY) === "true"
+  );
+  const [responses, setResponses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
+    if (!authenticated) return;
+
     async function load() {
+      setLoading(true);
+      setError("");
+
       if (!isSupabaseConfigured) {
         setLoading(false);
         setError(
@@ -21,20 +75,35 @@ export default function DashboardPage() {
         );
         return;
       }
-      const { data, error } = await supabase
+
+      const { data, error: fetchError } = await supabase
         .from("feedback_responses")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        setError(error.message);
+      if (fetchError) {
+        setError(fetchError.message);
       } else {
         setResponses(data || []);
       }
       setLoading(false);
     }
+
     load();
-  }, []);
+  }, [authenticated]);
+
+  if (!DASHBOARD_ACCESS_KEY) {
+    return (
+      <div className="banner banner-error">
+        대시보드 접근 키가 설정되지 않았습니다. VITE_DASHBOARD_KEY 환경변수를
+        입력해 주세요.
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return <DashboardGate onUnlock={() => setAuthenticated(true)} />;
+  }
 
   // 항목별 평균 점수 계산
   const ratingStats = useMemo(() => {
@@ -80,7 +149,8 @@ export default function DashboardPage() {
       <div className="card">
         <div className="dash-head">
           <h1>결과 대시보드</h1>
-          <div className="dash-summary">
+          <div className="dash-actions">
+            <div className="dash-summary">
             <div className="stat-box">
               <span className="stat-num">{responses.length}</span>
               <span className="stat-label">총 응답 수</span>
@@ -91,6 +161,17 @@ export default function DashboardPage() {
               </span>
               <span className="stat-label">전체 평균 점수</span>
             </div>
+            </div>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                sessionStorage.removeItem(AUTH_SESSION_KEY);
+                setAuthenticated(false);
+              }}
+            >
+              잠금
+            </button>
           </div>
         </div>
       </div>
