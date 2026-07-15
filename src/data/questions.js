@@ -1,7 +1,8 @@
 // 성결대 유학생 단기선교 피드백 - 폼 구조 정의
 // 원본 구글 문서의 "9. 평가 및 피드백" 구조를 그대로 반영
 
-// (1) 항목별 평가 - 점수(1~10) + 좋았던 점 + 개선할 점
+// (1) 항목별 평가 - 점수(1~5) + 좋았던 점 + 개선할 점
+export const MAX_RATING_SCORE = 5;
 export const RATING_ITEMS = [
   { key: "pre_meeting", label: "사전 모임" },
   { key: "preparation", label: "사전 준비과정" },

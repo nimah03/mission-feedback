@@ -4,6 +4,7 @@ import {
   RATING_ITEMS,
   COMPREHENSIVE_QUESTIONS,
   PROS_CONS_SECTIONS,
+  MAX_RATING_SCORE,
 } from "../data/questions.js";
 
 const DASHBOARD_ACCESS_KEY = import.meta.env.VITE_DASHBOARD_KEY ?? "";
@@ -126,9 +127,9 @@ export default function DashboardPage() {
 
   function scoreColor(avg) {
     if (avg === null) return "#cbd5e1";
-    if (avg >= 8) return "#16a34a";
-    if (avg >= 6) return "#65a30d";
-    if (avg >= 4) return "#d97706";
+    if (avg >= MAX_RATING_SCORE * 0.8) return "#16a34a";
+    if (avg >= MAX_RATING_SCORE * 0.6) return "#65a30d";
+    if (avg >= MAX_RATING_SCORE * 0.4) return "#d97706";
     return "#dc2626";
   }
 
@@ -193,7 +194,7 @@ export default function DashboardPage() {
                     <div
                       className="bar-fill"
                       style={{
-                        width: `${s.avg ? (s.avg / 10) * 100 : 0}%`,
+                        width: `${s.avg ? (s.avg / MAX_RATING_SCORE) * 100 : 0}%`,
                         background: scoreColor(s.avg),
                       }}
                     />

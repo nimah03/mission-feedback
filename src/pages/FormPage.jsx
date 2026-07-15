@@ -5,9 +5,10 @@ import {
   COMPREHENSIVE_QUESTIONS,
   PROS_CONS_SECTIONS,
   createEmptyForm,
+  MAX_RATING_SCORE,
 } from "../data/questions.js";
 
-const SCORES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const SCORES = Array.from({ length: MAX_RATING_SCORE }, (_, i) => i + 1);
 
 export default function FormPage() {
   const [form, setForm] = useState(createEmptyForm);
@@ -152,7 +153,7 @@ export default function FormPage() {
           <span className="section-num">1</span> 항목별 평가
         </h2>
         <p className="section-desc">
-          각 항목을 1~10점으로 평가하고, 좋았던 점과 개선할 점을 적어주세요.
+          각 항목을 1~5점으로 평가하고, 좋았던 점과 개선할 점을 적어주세요.
         </p>
 
         <div className="rating-list">
