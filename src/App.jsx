@@ -1,10 +1,11 @@
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
 import FormPage from "./pages/FormPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import "./App.css";
 
 export default function App() {
   const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
     <div className="app">
@@ -14,22 +15,21 @@ export default function App() {
           <span>성결대 유학생 단기선교 피드백</span>
         </Link>
         <nav className="app-nav">
-          <Link
-            to="/"
-            className={location.pathname === "/" ? "nav-link active" : "nav-link"}
-          >
-            피드백 작성
-          </Link>
-          <Link
-            to="/dashboard"
-            className={
-              location.pathname === "/dashboard"
-                ? "nav-link active"
-                : "nav-link"
-            }
-          >
-            결과 대시보드
-          </Link>
+          {!isDashboard && (
+            <Link
+              to="/"
+              className={
+                location.pathname === "/" ? "nav-link active" : "nav-link"
+              }
+            >
+              피드백 작성
+            </Link>
+          )}
+          {isDashboard && (
+            <Link to="/" className="nav-link">
+              피드백 작성으로
+            </Link>
+          )}
         </nav>
       </header>
 
@@ -37,6 +37,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<FormPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
