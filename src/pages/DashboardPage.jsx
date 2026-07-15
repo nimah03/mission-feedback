@@ -220,6 +220,11 @@ export default function DashboardPage() {
                 >
                   <span className="resp-name">
                     익명 #{responses.length - index}
+                    {(r.gender_team || r.participation) && (
+                      <span className="resp-meta">
+                        {[r.gender_team, r.participation].filter(Boolean).join(" · ")}
+                      </span>
+                    )}
                   </span>
                   <span className="resp-date">
                     {new Date(r.created_at).toLocaleString("ko-KR")}
@@ -257,6 +262,13 @@ function ResponseModal({ response, onClose }) {
           <p className="modal-date">
             제출: {new Date(response.created_at).toLocaleString("ko-KR")}
           </p>
+          {(response.gender_team || response.participation) && (
+            <p className="modal-meta">
+              {[response.gender_team, response.participation]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          )}
 
           <h3 className="modal-section">항목별 평가</h3>
           <table className="detail-table">

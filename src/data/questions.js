@@ -75,6 +75,9 @@ export const PROS_CONS_SECTIONS = [
   { key: "personal", label: "개인 평가" },
 ];
 
+export const GENDER_TEAM_OPTIONS = ["형제", "자매"];
+export const PARTICIPATION_OPTIONS = ["풀참", "부분참"];
+
 // 빈 폼 초기값 생성
 export function createEmptyForm() {
   const ratings = {};
@@ -93,6 +96,8 @@ export function createEmptyForm() {
   });
 
   return {
+    gender_team: "",
+    participation: "",
     ratings,
     comprehensive,
     pros_cons: prosCons,

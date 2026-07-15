@@ -7,10 +7,16 @@ create table if not exists public.feedback_responses (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   respondent_name text not null default '익명',
+  gender_team text,
+  participation text,
   ratings jsonb not null default '{}'::jsonb,        -- 항목별 점수/좋았던점/개선점
   comprehensive jsonb not null default '{}'::jsonb,  -- 종합평가 서술형
   pros_cons jsonb not null default '{}'::jsonb       -- 웰컴파티/팀/개인 평가
 );
+
+-- 기존 테이블에 컬럼 추가 (이미 테이블이 있는 경우 SQL Editor에서 실행)
+alter table public.feedback_responses add column if not exists gender_team text;
+alter table public.feedback_responses add column if not exists participation text;
 
 -- 최신순 조회를 빠르게 하기 위한 인덱스
 create index if not exists feedback_responses_created_at_idx

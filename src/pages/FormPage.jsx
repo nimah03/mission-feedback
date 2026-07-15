@@ -4,6 +4,8 @@ import {
   RATING_ITEMS,
   COMPREHENSIVE_QUESTIONS,
   PROS_CONS_SECTIONS,
+  GENDER_TEAM_OPTIONS,
+  PARTICIPATION_OPTIONS,
   createEmptyForm,
   MAX_RATING_SCORE,
 } from "../data/questions.js";
@@ -46,6 +48,18 @@ export default function FormPage() {
     e.preventDefault();
     setErrorMsg("");
 
+    if (!form.gender_team) {
+      setErrorMsg("형제/자매를 선택해 주세요.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (!form.participation) {
+      setErrorMsg("풀참/부분참을 선택해 주세요.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     if (!isSupabaseConfigured) {
       setStatus("error");
       setErrorMsg(
@@ -68,6 +82,8 @@ export default function FormPage() {
 
     const { error } = await supabase.from("feedback_responses").insert({
       respondent_name: "익명",
+      gender_team: form.gender_team,
+      participation: form.participation,
       ratings: ratingsToSave,
       comprehensive: form.comprehensive,
       pros_cons: form.pros_cons,
@@ -124,6 +140,61 @@ export default function FormPage() {
       {errorMsg && status !== "success" && (
         <div className="banner banner-error">{errorMsg}</div>
       )}
+
+      <section className="card">
+        <h2 className="section-title">기본 정보</h2>
+        <p className="section-desc">아래 항목을 선택해 주세요.</p>
+
+        <div className="participant-fields">
+          <div className="participant-field">
+            <label className="field-label">
+              형제 / 자매 <span className="required">*</span>
+            </label>
+            <div className="option-picker">
+              {GENDER_TEAM_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={
+                    form.gender_team === option
+                      ? "option-chip selected"
+                      : "option-chip"
+                  }
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, gender_team: option }))
+                  }
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="participant-field">
+            <label className="field-label">
+              참석 유형 <span className="required">*</span>
+            </label>
+            <div className="option-picker">
+              {PARTICIPATION_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={
+                    form.participation === option
+                      ? "option-chip selected"
+                      : "option-chip"
+                  }
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, participation: option }))
+                  }
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* (1) 항목별 평가 */}
       <section className="card">
