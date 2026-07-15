@@ -94,20 +94,6 @@ export default function DashboardPage() {
     load();
   }, [authenticated]);
 
-  if (!DASHBOARD_ACCESS_KEY) {
-    return (
-      <div className="banner banner-error">
-        대시보드 접근 키가 설정되지 않았습니다. VITE_DASHBOARD_KEY 환경변수를
-        입력해 주세요.
-      </div>
-    );
-  }
-
-  if (!authenticated) {
-    return <DashboardGate onUnlock={() => setAuthenticated(true)} />;
-  }
-
-  // 항목별 평균 점수 계산
   const ratingStats = useMemo(() => {
     return RATING_ITEMS.map((item) => {
       const scores = responses
@@ -132,6 +118,19 @@ export default function DashboardPage() {
     if (avg >= MAX_RATING_SCORE * 0.6) return "#65a30d";
     if (avg >= MAX_RATING_SCORE * 0.4) return "#d97706";
     return "#dc2626";
+  }
+
+  if (!DASHBOARD_ACCESS_KEY) {
+    return (
+      <div className="banner banner-error">
+        대시보드 접근 키가 설정되지 않았습니다. VITE_DASHBOARD_KEY 환경변수를
+        입력해 주세요.
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return <DashboardGate onUnlock={() => setAuthenticated(true)} />;
   }
 
   if (loading) {
@@ -258,8 +257,8 @@ function ResponseModal({ response, onClose }) {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h2>
-            {selected.displayNumber
-              ? `익명 #${selected.displayNumber} 피드백`
+            {response.displayNumber
+              ? `익명 #${response.displayNumber} 피드백`
               : "익명 피드백"}
           </h2>
           <button className="modal-close" onClick={onClose}>
