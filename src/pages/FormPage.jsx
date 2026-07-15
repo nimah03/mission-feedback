@@ -46,12 +46,6 @@ export default function FormPage() {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!form.respondent_name.trim()) {
-      setErrorMsg("이름을 입력해 주세요.");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
     if (!isSupabaseConfigured) {
       setStatus("error");
       setErrorMsg(
@@ -73,7 +67,7 @@ export default function FormPage() {
     });
 
     const { error } = await supabase.from("feedback_responses").insert({
-      respondent_name: form.respondent_name.trim(),
+      respondent_name: "익명",
       ratings: ratingsToSave,
       comprehensive: form.comprehensive,
       pros_cons: form.pros_cons,
@@ -116,6 +110,7 @@ export default function FormPage() {
           이번 유학생 단기선교를 돌아보며 솔직한 피드백을 남겨주세요. 여러분의
           의견은 다음 사역을 더 잘 준비하는 데 큰 도움이 됩니다.
         </p>
+        <p className="intro-note">모든 피드백은 익명으로 제출됩니다.</p>
       </div>
 
       {!isSupabaseConfigured && (
@@ -129,23 +124,6 @@ export default function FormPage() {
       {errorMsg && status !== "success" && (
         <div className="banner banner-error">{errorMsg}</div>
       )}
-
-      {/* 이름 */}
-      <section className="card">
-        <label className="field-label" htmlFor="respondent_name">
-          이름 <span className="required">*</span>
-        </label>
-        <input
-          id="respondent_name"
-          className="text-input"
-          type="text"
-          placeholder="이름을 입력하세요"
-          value={form.respondent_name}
-          onChange={(e) =>
-            setForm((prev) => ({ ...prev, respondent_name: e.target.value }))
-          }
-        />
-      </section>
 
       {/* (1) 항목별 평가 */}
       <section className="card">

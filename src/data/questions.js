@@ -93,7 +93,6 @@ export function createEmptyForm() {
   });
 
   return {
-    respondent_name: "",
     ratings,
     comprehensive,
     pros_cons: prosCons,

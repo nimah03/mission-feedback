@@ -6,7 +6,7 @@
 create table if not exists public.feedback_responses (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
-  respondent_name text not null,
+  respondent_name text not null default '익명',
   ratings jsonb not null default '{}'::jsonb,        -- 항목별 점수/좋았던점/개선점
   comprehensive jsonb not null default '{}'::jsonb,  -- 종합평가 서술형
   pros_cons jsonb not null default '{}'::jsonb       -- 웰컴파티/팀/개인 평가

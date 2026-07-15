@@ -212,13 +212,15 @@ export default function DashboardPage() {
           <section className="card">
             <h2 className="section-title">응답 목록</h2>
             <div className="response-list">
-              {responses.map((r) => (
+              {responses.map((r, index) => (
                 <button
                   key={r.id}
                   className="response-row"
-                  onClick={() => setSelected(r)}
+                  onClick={() => setSelected({ ...r, displayNumber: responses.length - index })}
                 >
-                  <span className="resp-name">{r.respondent_name}</span>
+                  <span className="resp-name">
+                    익명 #{responses.length - index}
+                  </span>
                   <span className="resp-date">
                     {new Date(r.created_at).toLocaleString("ko-KR")}
                   </span>
@@ -242,7 +244,11 @@ function ResponseModal({ response, onClose }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h2>{response.respondent_name} 님의 피드백</h2>
+          <h2>
+            {selected.displayNumber
+              ? `익명 #${selected.displayNumber} 피드백`
+              : "익명 피드백"}
+          </h2>
           <button className="modal-close" onClick={onClose}>
             ✕
           </button>

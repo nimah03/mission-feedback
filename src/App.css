@@ -104,6 +104,16 @@
   line-height: 1.7;
 }
 
+.intro-note {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* ---------- Banners ---------- */
 .banner {
   border-radius: 12px;
