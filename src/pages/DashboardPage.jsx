@@ -5,6 +5,7 @@ import {
   COMPREHENSIVE_QUESTIONS,
   PROS_CONS_SECTIONS,
   MAX_RATING_SCORE,
+  getParticipantInfo,
 } from "../data/questions.js";
 
 const DASHBOARD_ACCESS_KEY = import.meta.env.VITE_DASHBOARD_KEY ?? "";
@@ -212,7 +213,9 @@ export default function DashboardPage() {
           <section className="card">
             <h2 className="section-title">응답 목록</h2>
             <div className="response-list">
-              {responses.map((r, index) => (
+              {responses.map((r, index) => {
+                const participant = getParticipantInfo(r);
+                return (
                 <button
                   key={r.id}
                   className="response-row"
@@ -220,9 +223,11 @@ export default function DashboardPage() {
                 >
                   <span className="resp-name">
                     익명 #{responses.length - index}
-                    {(r.gender_team || r.participation) && (
+                    {(participant.gender_team || participant.participation) && (
                       <span className="resp-meta">
-                        {[r.gender_team, r.participation].filter(Boolean).join(" · ")}
+                        {[participant.gender_team, participant.participation]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </span>
                     )}
                   </span>
@@ -231,7 +236,8 @@ export default function DashboardPage() {
                   </span>
                   <span className="resp-view">자세히 보기 →</span>
                 </button>
-              ))}
+              );
+              })}
             </div>
           </section>
         </>
@@ -245,6 +251,8 @@ export default function DashboardPage() {
 }
 
 function ResponseModal({ response, onClose }) {
+  const participant = getParticipantInfo(response);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -262,9 +270,9 @@ function ResponseModal({ response, onClose }) {
           <p className="modal-date">
             제출: {new Date(response.created_at).toLocaleString("ko-KR")}
           </p>
-          {(response.gender_team || response.participation) && (
+          {(participant.gender_team || participant.participation) && (
             <p className="modal-meta">
-              {[response.gender_team, response.participation]
+              {[participant.gender_team, participant.participation]
                 .filter(Boolean)
                 .join(" · ")}
             </p>

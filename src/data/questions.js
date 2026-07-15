@@ -78,6 +78,24 @@ export const PROS_CONS_SECTIONS = [
 export const GENDER_TEAM_OPTIONS = ["형제", "자매"];
 export const PARTICIPATION_OPTIONS = ["풀참", "부분참"];
 
+export function getParticipantInfo(response) {
+  const stored = response?.comprehensive?._participant ?? {};
+  return {
+    gender_team: response?.gender_team || stored.gender_team || "",
+    participation: response?.participation || stored.participation || "",
+  };
+}
+
+export function buildComprehensivePayload(form) {
+  return {
+    ...form.comprehensive,
+    _participant: {
+      gender_team: form.gender_team,
+      participation: form.participation,
+    },
+  };
+}
+
 // 빈 폼 초기값 생성
 export function createEmptyForm() {
   const ratings = {};

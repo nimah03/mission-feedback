@@ -8,6 +8,7 @@ import {
   PARTICIPATION_OPTIONS,
   createEmptyForm,
   MAX_RATING_SCORE,
+  buildComprehensivePayload,
 } from "../data/questions.js";
 
 const SCORES = Array.from({ length: MAX_RATING_SCORE }, (_, i) => i + 1);
@@ -82,10 +83,8 @@ export default function FormPage() {
 
     const { error } = await supabase.from("feedback_responses").insert({
       respondent_name: "익명",
-      gender_team: form.gender_team,
-      participation: form.participation,
       ratings: ratingsToSave,
-      comprehensive: form.comprehensive,
+      comprehensive: buildComprehensivePayload(form),
       pros_cons: form.pros_cons,
     });
 
